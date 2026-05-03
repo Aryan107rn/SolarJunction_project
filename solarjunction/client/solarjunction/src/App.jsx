@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop'
 import Marquee from './components/Marquee'
 import CursorGlow from './components/CursorGlow'
 import Calculator from './sections/Calculator'
+import CalcButton from './components/CalcButton'
 
 export default function App() {
   return (
@@ -18,8 +19,8 @@ export default function App() {
       <Marquee />
       <ServicesProjects />
       <About />
-      <Calculator />
       <FAQLegal />
+      <CalcButton />
       <Contact />
       <Footer />
       <ScrollToTop />
