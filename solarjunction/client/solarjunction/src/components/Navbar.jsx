@@ -19,13 +19,23 @@ export default function Navbar() {
         ))}
       </ul>
 
-      <a
-        href="#contact"
-        className="text-xs font-bold tracking-widest uppercase bg-[#1E5939] text-white px-5 py-2 rounded-full hover:bg-[#E88A1A] transition-colors"
-      >
-        Get Quote
-      </a>
+      {/* UPDATED RIGHT SIDE */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => document.dispatchEvent(new CustomEvent('openCalc'))}
+          className="text-xs font-bold tracking-widest uppercase border border-[#1E5939] text-[#1E5939] px-5 py-2 rounded-full hover:bg-[#1E5939] hover:text-white transition-colors"
+        >
+          ⚡ Savings
+        </button>
+
+        <a
+          href="#contact"
+          className="text-xs font-bold tracking-widest uppercase bg-[#1E5939] text-white px-5 py-2 rounded-full hover:bg-[#E88A1A] transition-colors"
+        >
+          Get Quote
+        </a>
+      </div>
 
     </nav>
-  )
+  );
 }
