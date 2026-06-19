@@ -2,16 +2,16 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const stateData = {
-  Maharashtra: 5.5,
-  Rajasthan: 6.0,
-  Gujarat: 5.8,
-  'Madhya Pradesh': 5.4,
-  'Uttar Pradesh': 5.2,
-  Delhi: 5.0,
-  Karnataka: 5.3,
-  'Tamil Nadu': 5.6,
-  Telangana: 5.5,
-  'Andhra Pradesh': 5.4,
+  Maharashtra: 11.0,
+  Rajasthan: 12.0,
+  Gujarat: 10.8,
+  'Madhya Pradesh': 11.4,
+  'Uttar Pradesh': 13.2,
+  Delhi: 11.0,
+  Karnataka: 12.3,
+  'Tamil Nadu': 9.6,
+  Telangana: 12.5,
+  'Andhra Pradesh': 11.4,
 }
 
 const propertyMultiplier = {
