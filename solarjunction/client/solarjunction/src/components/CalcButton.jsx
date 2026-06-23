@@ -11,7 +11,7 @@ const stateData = {
   Karnataka: 12.3,
   'Tamil Nadu': 9.6,
   Telangana: 12.5,
-  'Andhra Pradesh': 11.4,
+  'Andhra Pradesh': 11.7,
 }
 
 const propertyMultiplier = {
@@ -26,28 +26,41 @@ export default function CalcButton() {
   const [state, setState] = useState('Maharashtra')
   const [property, setProperty] = useState('Home')
   const [result, setResult] = useState(null)
+  const [validationError, setValidationError] = useState('')
 
-  // ✅ Listen to Navbar button
+  // Listen to Navbar button
   useEffect(() => {
     const handler = () => setOpen(true)
     document.addEventListener('openCalc', handler)
     return () => document.removeEventListener('openCalc', handler)
   }, [])
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
   const calculate = () => {
-    if (!bill || bill < 500) {
-      alert('Enter a valid bill (min ₹500)')
+    const billNum = parseFloat(bill)
+    if (!bill || isNaN(billNum) || billNum < 500) {
+      setValidationError('Please enter a valid monthly bill (minimum ₹500)')
       return
     }
+    setValidationError('')
 
     const sunHours = stateData[state]
     const multiplier = propertyMultiplier[property]
 
-    const unitsPerMonth = (bill / 8) * multiplier
+    const unitsPerMonth = (billNum / 8) * multiplier
     const systemSize = Math.ceil((unitsPerMonth / (sunHours * 30)) * 10) / 10
     const panels = Math.ceil((systemSize * 1000) / 400)
 
-    const monthlySaving = Math.round(bill * 0.85)
+    const monthlySaving = Math.round(billNum * 0.85)
     const yearlySaving = monthlySaving * 12
 
     const systemCost = Math.round(systemSize * 60000)
@@ -71,6 +84,7 @@ export default function CalcButton() {
     setBill('')
     setProperty('Home')
     setState('Maharashtra')
+    setValidationError('')
   }
 
   const close = () => {
@@ -98,7 +112,8 @@ export default function CalcButton() {
             {/* Close */}
             <button
               onClick={close}
-              className="absolute top-4 right-4 text-[#22382B]/40 hover:text-[#22382B] text-2xl font-black"
+              aria-label="Close calculator"
+              className="absolute top-4 right-4 text-[#22382B]/40 hover:text-[#22382B] text-2xl font-black transition-colors"
             >
               ✕
             </button>
@@ -129,10 +144,16 @@ export default function CalcButton() {
                     <input
                       type="number"
                       value={bill}
-                      onChange={(e) => setBill(e.target.value)}
+                      onChange={(e) => { setBill(e.target.value); setValidationError('') }}
                       placeholder="e.g. 3000"
-                      className="w-full bg-white border border-[#1E5939]/20 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#1E5939]"
+                      min="500"
+                      className={`w-full bg-white border rounded-lg px-4 py-3 text-sm outline-none transition-colors ${
+                        validationError ? 'border-red-400 focus:border-red-500' : 'border-[#1E5939]/20 focus:border-[#1E5939]'
+                      }`}
                     />
+                    {validationError && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{validationError}</p>
+                    )}
                   </div>
 
                   {/* State */}
@@ -161,7 +182,7 @@ export default function CalcButton() {
                         <button
                           key={type}
                           onClick={() => setProperty(type)}
-                          className={`flex-1 py-2 rounded-full text-xs font-bold tracking-widest uppercase ${
+                          className={`flex-1 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-colors ${
                             property === type
                               ? 'bg-[#1E5939] text-white'
                               : 'bg-white text-[#22382B]/50 hover:bg-[#1E5939]/10'
@@ -175,7 +196,7 @@ export default function CalcButton() {
 
                   <button
                     onClick={calculate}
-                    className="w-full bg-[#1E5939] text-white font-bold text-sm tracking-widest uppercase py-4 rounded-full hover:bg-[#E88A1A]"
+                    className="w-full bg-[#1E5939] text-white font-bold text-sm tracking-widest uppercase py-4 rounded-full hover:bg-[#E88A1A] transition-colors"
                   >
                     Calculate ⚡
                   </button>
@@ -202,9 +223,9 @@ export default function CalcButton() {
                       ['Monthly Saving', `₹${result.monthlySaving}`],
                       ['System Size', `${result.systemSize} kW`],
                       ['Panels', result.panels],
-                      ['Cost', `₹${result.systemCost}`],
+                      ['Cost', `₹${result.systemCost.toLocaleString()}`],
                       ['Payback', `${result.payback} yrs`],
-                      ['CO2', `${result.co2} tons`],
+                      ['CO₂ Saved', `${result.co2} tons/yr`],
                     ].map(([l, v]) => (
                       <div key={l} className="bg-[#E1E6E1] p-3 rounded-xl">
                         <p className="text-[#22382B]/40 text-xs">{l}</p>
@@ -216,7 +237,7 @@ export default function CalcButton() {
                   <div className="flex gap-3">
                     <button
                       onClick={reset}
-                      className="flex-1 border border-[#1E5939] text-[#1E5939] text-xs py-3 rounded-full"
+                      className="flex-1 border border-[#1E5939] text-[#1E5939] text-xs font-bold py-3 rounded-full hover:bg-[#1E5939]/10 transition-colors"
                     >
                       Recalculate
                     </button>
@@ -224,7 +245,7 @@ export default function CalcButton() {
                     <a
                       href="#contact"
                       onClick={close}
-                      className="flex-1 bg-[#E88A1A] text-white text-xs py-3 rounded-full text-center"
+                      className="flex-1 bg-[#E88A1A] text-white text-xs font-bold py-3 rounded-full text-center hover:bg-[#d17a12] transition-colors"
                     >
                       Get Quote →
                     </a>

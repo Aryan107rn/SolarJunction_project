@@ -8,12 +8,11 @@ import Footer from './sections/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import Marquee from './components/Marquee'
 import CursorGlow from './components/CursorGlow'
-import Calculator from './sections/Calculator'
 import CalcButton from './components/CalcButton'
 
 export default function App() {
   return (
-    <main className="bg-[#FEFCE8] text-[#1a2e1a] overflow-x-hidden">
+    <main className="bg-[#E8F0E8] text-[#22382B] overflow-x-hidden">
       <Navbar />
       <Hero />
       <Marquee />

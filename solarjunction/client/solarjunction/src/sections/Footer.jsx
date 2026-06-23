@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa'
 
 export default function Footer() {
@@ -11,7 +10,7 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="md:col-span-2">
-            <a href="#" className="font-black text-3xl tracking-widest text-[#E88A1A]">
+            <a href="#home" className="font-black text-3xl tracking-widest text-[#E88A1A]">
               SOLAR<span className="text-white">JUNCTION</span>
             </a>
 
@@ -22,13 +21,14 @@ export default function Footer() {
             {/* Socials */}
             <div className="flex gap-3 mt-6">
               {[
-                { icon: <FaFacebookF />, href: '#' },
-                { icon: <FaInstagram />, href: '#' },
-                { icon: <FaYoutube />, href: '#' },
-              ].map(({ icon, href }, i) => (
+                { icon: <FaFacebookF />, href: '#', label: 'Facebook' },
+                { icon: <FaInstagram />, href: '#', label: 'Instagram' },
+                { icon: <FaYoutube />, href: '#', label: 'YouTube' },
+              ].map(({ icon, href, label }) => (
                 <a
-                  key={i}
+                  key={label}
                   href={href}
+                  aria-label={label}
                   className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:border-[#E88A1A] hover:text-[#E88A1A] hover:bg-[#E88A1A]/10 transition-all duration-300"
                 >
                   {icon}
@@ -44,7 +44,7 @@ export default function Footer() {
             </p>
 
             <ul className="flex flex-col gap-3">
-              {['Services', 'Projects', 'About', 'FAQ', 'Contact'].map(link => (
+              {['Services', 'About', 'FAQ', 'Contact'].map(link => (
                 <li key={link}>
                   <a
                     href={`#${link.toLowerCase()}`}
@@ -64,13 +64,13 @@ export default function Footer() {
             </p>
 
             <ul className="flex flex-col gap-3 text-sm text-white/40">
-              <li>📞 +91 98765 43210</li>
+              <li>📞 +91 84838 89064</li>
               <li>📧 solarjunctionllp@gmail.com</li>
               <li>📍 Nagpur, Maharashtra</li>
             </ul>
 
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/918483889064"
               target="_blank"
               rel="noreferrer"
               className="mt-6 inline-flex items-center gap-2 bg-[#25D366] text-white text-xs font-bold tracking-widest uppercase px-5 py-2 rounded-full hover:opacity-80 transition-opacity"
@@ -83,16 +83,16 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs text-white/20">
-          <p>© 2025 SolarJunction. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} SolarJunction. All rights reserved.</p>
 
           <div className="flex gap-6">
-            <a href="#legal" className="hover:text-white/60 transition-colors">
+            <a href="#faq" className="hover:text-white/60 transition-colors">
               Privacy Policy
             </a>
-            <a href="#legal" className="hover:text-white/60 transition-colors">
+            <a href="#faq" className="hover:text-white/60 transition-colors">
               Terms of Service
             </a>
-            <a href="#legal" className="hover:text-white/60 transition-colors">
+            <a href="#faq" className="hover:text-white/60 transition-colors">
               Certifications
             </a>
           </div>

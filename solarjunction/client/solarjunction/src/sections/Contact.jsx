@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 export default function Contact() {
   const [form, setForm] = useState({
     name: '',
@@ -11,42 +13,82 @@ export default function Contact() {
 
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
 
-  const handle = (e) =>
+  const handle = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
+    // Clear field error when user types
+    if (fieldErrors[e.target.name]) {
+      setFieldErrors({ ...fieldErrors, [e.target.name]: '' })
+    }
+    if (error) setError('')
+  }
+
+  const validate = () => {
+    const errors = {}
+
+    if (!form.name.trim()) errors.name = 'Name is required'
+    if (!form.phone.trim()) {
+      errors.phone = 'Phone number is required'
+    } else if (!/^[+]?[\d\s-]{10,15}$/.test(form.phone.replace(/\s/g, ''))) {
+      errors.phone = 'Enter a valid phone number'
+    }
+    if (!form.email.trim()) {
+      errors.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errors.email = 'Enter a valid email address'
+    }
+    if (!form.message.trim()) errors.message = 'Message is required'
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const handleSubmit = async () => {
-    if (!form.name || !form.phone || !form.email || !form.message) {
-      alert('Please fill all fields!')
-      return
-    }
+    if (!validate()) return
 
     setLoading(true)
+    setError('')
 
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
+      const res = await fetch(`${API_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify({
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim(),
+          message: form.message.trim()
+        })
       })
 
       const data = await res.json()
 
       if (data.success) {
         setSent(true)
-        setForm({ name: '', phone: '', email: '', message: '' }) // reset form
+        setForm({ name: '', phone: '', email: '', message: '' })
+        // Allow re-sending after 5 seconds
+        setTimeout(() => setSent(false), 5000)
       } else {
-        alert('Something went wrong. Try again.')
+        setError(data.error || 'Something went wrong. Please try again.')
       }
     } catch {
-      alert('Server not reachable. Make sure backend is running.')
+      setError('Unable to reach server. Please try again later or contact us via WhatsApp.')
     }
 
     setLoading(false)
   }
 
+  const inputClass = (name) =>
+    `w-full bg-[#E1E6E1] border rounded-lg px-4 py-3 text-[#22382B] text-sm outline-none transition-colors placeholder:text-[#22382B]/30 ${
+      fieldErrors[name]
+        ? 'border-red-400 focus:border-red-500'
+        : 'border-[#1E5939]/20 focus:border-[#1E5939]'
+    }`
+
   return (
-    <section id="contact" className="py-28 px-8 md:px-16 bg-[#F4F7F4]">
+    <section id="contact" className="py-28 px-8 md:px-16 bg-[#EDF4ED]">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
 
         {/* Left */}
@@ -69,8 +111,8 @@ export default function Contact() {
 
           <div className="flex flex-col gap-5">
             {[
-              { icon: '📞', label: 'Phone', value: '+91 98765 43210' },
-              { icon: '💬', label: 'WhatsApp', value: '+91 98765 43210' },
+              { icon: '📞', label: 'Phone', value: '+91 84838 89064' },
+              { icon: '💬', label: 'WhatsApp', value: '+91 84838 89064' },
               { icon: '📧', label: 'Email', value: 'solarjunctionllp@gmail.com' },
               { icon: '📍', label: 'Location', value: 'Nagpur, Maharashtra' },
             ].map(({ icon, label, value }) => (
@@ -92,7 +134,7 @@ export default function Contact() {
 
           {/* WhatsApp CTA */}
           <a
-            href="https://wa.me/919876543210"
+            href="https://wa.me/918483889064"
             target="_blank"
             rel="noreferrer"
             className="mt-10 inline-flex items-center gap-3 bg-[#25D366] text-white font-bold text-sm tracking-widest uppercase px-8 py-3 rounded-full hover:opacity-80 transition-opacity"
@@ -116,8 +158,8 @@ export default function Contact() {
 
             {[
               { name: 'name', label: 'Your Name', type: 'text', placeholder: 'Rajesh Sharma' },
-              { name: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+91 98765 43210' },
-              { name: 'email', label: 'Email Address', type: 'email', placeholder: 'you@email.com' },
+              { name: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+91 84838 89064' },
+              { name: 'email', label: 'Email Address', type: 'email', placeholder: 'solarjunctionllp@gmail.com' },
             ].map(({ name, label, type, placeholder }) => (
               <div key={name}>
                 <label className="text-xs font-bold tracking-widest uppercase text-[#22382B]/50 mb-2 block">
@@ -130,8 +172,11 @@ export default function Contact() {
                   value={form[name]}
                   onChange={handle}
                   placeholder={placeholder}
-                  className="w-full bg-[#E1E6E1] border border-[#1E5939]/20 rounded-lg px-4 py-3 text-[#22382B] text-sm outline-none focus:border-[#1E5939] transition-colors placeholder:text-[#22382B]/30"
+                  className={inputClass(name)}
                 />
+                {fieldErrors[name] && (
+                  <p className="text-red-500 text-xs mt-1 font-medium">{fieldErrors[name]}</p>
+                )}
               </div>
             ))}
 
@@ -146,9 +191,26 @@ export default function Contact() {
                 onChange={handle}
                 placeholder="Tell us about your property and energy needs..."
                 rows={4}
-                className="w-full bg-[#E1E6E1] border border-[#1E5939]/20 rounded-lg px-4 py-3 text-[#22382B] text-sm outline-none focus:border-[#1E5939] transition-colors placeholder:text-[#22382B]/30 resize-none"
+                className={`${inputClass('message')} resize-none`}
               />
+              {fieldErrors.message && (
+                <p className="text-red-500 text-xs mt-1 font-medium">{fieldErrors.message}</p>
+              )}
             </div>
+
+            {/* Global error message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
+
+            {/* Success message */}
+            {sent && (
+              <div className="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
+                ✅ Your request has been sent! We'll contact you within 24 hours.
+              </div>
+            )}
 
             <button
               onClick={handleSubmit}

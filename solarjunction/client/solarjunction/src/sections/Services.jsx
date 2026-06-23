@@ -18,7 +18,7 @@ export default function ServicesProjects() {
   const [tab, setTab] = useState('services')
 
   return (
-    <section id="services" className="py-28 px-8 md:px-16 bg-[#E1E6E1]">
+    <section id="services" className="py-28 px-8 md:px-16 bg-[#E8F0E8]">
       <div className="max-w-5xl mx-auto">
 
         {/* Tag */}
@@ -74,7 +74,7 @@ export default function ServicesProjects() {
               {services.map(({ icon, title, desc }) => (
                 <div
                   key={title}
-                  className="bg-[#F4F7F4] border border-[#1E5939]/10 p-8 rounded-xl hover:border-[#E88A1A]/40 transition-colors"
+                  className="bg-[#F0F7F0] border border-[#1E5939]/10 p-8 rounded-xl hover:border-[#E88A1A]/40 transition-colors"
                 >
                   <div className="text-4xl mb-4">{icon}</div>
                   <h3 className="text-xl font-black uppercase text-[#22382B] mb-2">
@@ -97,7 +97,7 @@ export default function ServicesProjects() {
               {projects.map(({ title, location, panels, capacity, saving }) => (
                 <div
                   key={title}
-                  className="bg-[#F4F7F4] border border-[#1E5939]/10 p-8 rounded-xl hover:border-[#E88A1A]/40 transition-colors"
+                  className="bg-[#F0F7F0] border border-[#1E5939]/10 p-8 rounded-xl hover:border-[#E88A1A]/40 transition-colors"
                 >
                   <div className="w-full h-32 bg-[#1E5939]/10 rounded-lg flex items-center justify-center mb-6 text-5xl">
                     ☀️

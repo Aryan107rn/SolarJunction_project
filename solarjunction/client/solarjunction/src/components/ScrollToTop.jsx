@@ -6,7 +6,7 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 400)
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -18,6 +18,7 @@ export default function ScrollToTop() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Scroll to top"
           className="fixed bottom-8 right-8 z-50 bg-[#c5f135] text-[#080f08] w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity text-xl font-bold">
           ↑
         </motion.button>

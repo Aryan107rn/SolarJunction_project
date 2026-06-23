@@ -15,16 +15,26 @@ export default function FAQLegal() {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
-    <section id="faq" className="py-28 px-8 md:px-16 bg-[#E1E6E1]">
+    <section id="faq" className="py-28 px-8 md:px-16 bg-[#E3EDE3]">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
 
         {/* FAQ */}
         <div>
-          <motion.p className="text-xs font-bold tracking-[.25em] uppercase text-[#E88A1A] mb-3">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-xs font-bold tracking-[.25em] uppercase text-[#E88A1A] mb-3"
+          >
             Got Questions?
           </motion.p>
 
-          <motion.h2 className="text-4xl font-black uppercase text-[#22382B] mb-10 leading-none">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl font-black uppercase text-[#22382B] mb-10 leading-none"
+          >
             FAQ
           </motion.h2>
 
@@ -32,16 +42,21 @@ export default function FAQLegal() {
             {faqs.map(({ q, a }, i) => (
               <motion.div
                 key={i}
-                className="bg-[#F4F7F4] border border-[#1E5939]/10 rounded-xl overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="bg-[#F0F7F0] border border-[#1E5939]/10 rounded-xl overflow-hidden"
               >
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
+                  aria-expanded={open === i}
                   className="w-full flex items-center justify-between px-5 py-4 text-left"
                 >
                   <span className="font-bold text-[#22382B] text-sm">{q}</span>
 
                   <span
-                    className={`text-[#1E5939] text-xl font-black transition-transform duration-300 ${
+                    className={`text-[#1E5939] text-xl font-black transition-transform duration-300 shrink-0 ml-4 ${
                       open === i ? 'rotate-45' : ''
                     }`}
                   >
@@ -55,6 +70,7 @@ export default function FAQLegal() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <p className="px-5 pb-4 text-[#22382B]/50 text-sm leading-relaxed">
                         {a}
@@ -69,11 +85,21 @@ export default function FAQLegal() {
 
         {/* Legal */}
         <div>
-          <motion.p className="text-xs font-bold tracking-[.25em] uppercase text-[#E88A1A] mb-3">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-xs font-bold tracking-[.25em] uppercase text-[#E88A1A] mb-3"
+          >
             Legal & Technical
           </motion.p>
 
-          <motion.h2 className="text-4xl font-black uppercase text-[#22382B] mb-10 leading-none">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl font-black uppercase text-[#22382B] mb-10 leading-none"
+          >
             Trust & <span className="text-[#1E5939]">Compliance</span>
           </motion.h2>
 
@@ -84,7 +110,7 @@ export default function FAQLegal() {
             ].map(({ icon, title, desc }) => (
               <div
                 key={title}
-                className="bg-[#F4F7F4] border border-[#1E5939]/10 rounded-xl p-6"
+                className="bg-[#F0F7F0] border border-[#1E5939]/10 rounded-xl p-6"
               >
                 <div className="text-2xl mb-2">{icon}</div>
                 <h3 className="font-black uppercase text-[#22382B] mb-2">
@@ -97,7 +123,7 @@ export default function FAQLegal() {
             ))}
 
             {/* Certifications */}
-            <div className="bg-[#F4F7F4] border border-[#1E5939]/10 rounded-xl p-6">
+            <div className="bg-[#F0F7F0] border border-[#1E5939]/10 rounded-xl p-6">
               <div className="text-2xl mb-2">🏅</div>
               <h3 className="font-black uppercase text-[#22382B] mb-3">
                 Certifications
@@ -131,40 +157,50 @@ export default function FAQLegal() {
 
       </div>
 
-      {/* Modal */}
-      {modalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
-          onClick={() => setModalOpen(false)}
-        >
-          <div
-            className="bg-[#F4F7F4] rounded-2xl p-8 max-w-lg w-full relative"
-            onClick={e => e.stopPropagation()}
+      {/* Modal with animation */}
+      <AnimatePresence>
+        {modalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
+            onClick={() => setModalOpen(false)}
           >
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-[#22382B]/50 hover:text-[#22382B] text-2xl font-black"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-[#F4F7F4] rounded-2xl p-8 max-w-lg w-full relative"
+              onClick={e => e.stopPropagation()}
             >
-              ✕
-            </button>
+              <button
+                onClick={() => setModalOpen(false)}
+                aria-label="Close certificate modal"
+                className="absolute top-4 right-4 text-[#22382B]/50 hover:text-[#22382B] text-2xl font-black transition-colors"
+              >
+                ✕
+              </button>
 
-            <h3 className="font-black uppercase text-[#22382B] text-lg mb-6">
-              Government Certificate
-            </h3>
+              <h3 className="font-black uppercase text-[#22382B] text-lg mb-6">
+                Government Certificate
+              </h3>
 
-            <div className="w-full h-64 bg-[#E1E6E1] border-2 border-dashed border-[#1E5939]/20 rounded-xl flex flex-col items-center justify-center gap-3">
-              <span className="text-5xl">📋</span>
-              <p className="text-[#22382B]/50 text-sm">
-                Certificate will be displayed here
+              <div className="w-full h-64 bg-[#E1E6E1] border-2 border-dashed border-[#1E5939]/20 rounded-xl flex flex-col items-center justify-center gap-3">
+                <span className="text-5xl">📋</span>
+                <p className="text-[#22382B]/50 text-sm">
+                  Certificate will be displayed here
+                </p>
+              </div>
+
+              <p className="text-[#22382B]/50 text-xs text-center mt-4">
+                Issued by Ministry of New & Renewable Energy, Govt. of India
               </p>
-            </div>
-
-            <p className="text-[#22382B]/50 text-xs text-center mt-4">
-              Issued by Ministry of New & Renewable Energy, Govt. of India
-            </p>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

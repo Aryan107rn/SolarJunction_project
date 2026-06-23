@@ -10,10 +10,13 @@ export default function Marquee() {
     'PM Surya Ghar'
   ]
 
+  // Triple for seamless infinite loop
+  const repeated = [...items, ...items, ...items]
+
   return (
-    <div className="bg-[#22382B] py-4 overflow-hidden">
+    <div className="bg-[#22382B] py-4 overflow-hidden" aria-hidden="true">
       <div className="flex animate-marquee whitespace-nowrap">
-        {[...items, ...items].map((item, i) => (
+        {repeated.map((item, i) => (
           <span
             key={i}
             className="flex items-center gap-4 mx-6 text-xs font-black tracking-[.2em] uppercase text-[#E88A1A]"

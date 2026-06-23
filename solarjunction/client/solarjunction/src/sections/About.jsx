@@ -8,7 +8,7 @@ const reviews = [
 
 export default function About() {
   return (
-    <section id="about" className="py-28 px-8 md:px-16 bg-[#F4F7F4]">
+    <section id="about" className="py-28 px-8 md:px-16 bg-[#EDF4ED]">
       <div className="max-w-5xl mx-auto">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start mb-20">
@@ -104,8 +104,8 @@ export default function About() {
               className="bg-[#E1E6E1] border border-[#1E5939]/10 p-6 rounded-xl"
             >
               <div className="flex gap-1 mb-3">
-                {Array.from({ length: rating }).map((_, i) => (
-                  <span key={i} className="text-[#E88A1A]">★</span>
+                {Array.from({ length: rating }).map((_, starIdx) => (
+                  <span key={starIdx} className="text-[#E88A1A]">★</span>
                 ))}
               </div>
 

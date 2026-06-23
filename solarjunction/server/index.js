@@ -1,29 +1,84 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import rateLimit from 'express-rate-limit'
 import { sendMail } from './mailer.js'
 
 dotenv.config()
 
 const app = express()
 
-app.use(cors())
-app.use(express.json())
+// CORS — restrict in production
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:5173', 'http://localhost:4173']
 
-app.post('/api/contact', async (req, res) => {
-  const { name, phone, email, message } = req.body
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}))
+
+app.use(express.json({ limit: '10kb' })) // limit payload size
+
+// Rate limiting — max 5 contact submissions per IP per 15 minutes
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many requests. Please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+// Sanitize HTML to prevent injection in emails
+function sanitize(str) {
+  if (typeof str !== 'string') return ''
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .trim()
+}
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+app.post('/api/contact', contactLimiter, async (req, res) => {
+  const name = sanitize(req.body.name)
+  const phone = sanitize(req.body.phone)
+  const email = sanitize(req.body.email)
+  const message = sanitize(req.body.message)
 
   // Validation
   if (!name || !phone || !email || !message) {
     return res.status(400).json({ error: 'All fields are required' })
   }
 
+  // Basic length limits
+  if (name.length > 100 || phone.length > 20 || email.length > 100 || message.length > 2000) {
+    return res.status(400).json({ error: 'Input too long' })
+  }
+
+  // Basic email format check
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email)) {
+    return res.status(400).json({ error: 'Invalid email format' })
+  }
+
   try {
-    // =========================
+    // ========================
     // 📩 Email to User
-    // =========================
+    // ========================
     await sendMail({
-      to: email,
+      to: req.body.email, // use original email for sending (sanitized version is for display)
       subject: '☀️ Welcome to SolarJunction — Let\'s Go Green Together!',
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:auto;background:#F4F7F4;border-radius:12px;overflow:hidden;">
@@ -62,9 +117,9 @@ app.post('/api/contact', async (req, res) => {
             <table style="width:100%;border-collapse:collapse;">
               ${[
                 ['🏠', 'Home Installation', 'Complete rooftop solar setup. Save up to 90% on bills.'],
-                ['🏭', 'Business Installation', 'Large scale solar for offices & factories.'],
-                ['🔧', 'Maintenance & Repair', 'Regular servicing of existing solar systems.'],
-                ['📊', 'Free Site Survey', 'We visit & assess your site completely free.'],
+                ['🏭', 'Business Installation', 'Large scale solar for offices &amp; factories.'],
+                ['🔧', 'Maintenance &amp; Repair', 'Regular servicing of existing solar systems.'],
+                ['📊', 'Free Site Survey', 'We visit &amp; assess your site completely free.'],
               ].map(([icon, title, desc]) => `
                 <tr>
                   <td style="padding:10px;background:white;width:40px;">${icon}</td>
@@ -101,7 +156,7 @@ app.post('/api/contact', async (req, res) => {
             <!-- CTA -->
             <p>Need faster response?</p>
 
-            <a href="https://wa.me/919876543210"
+            <a href="https://wa.me/918483889064"
               style="display:inline-block;background:#25D366;color:white;padding:12px 28px;border-radius:999px;text-decoration:none;font-weight:bold;">
               💬 Chat on WhatsApp
             </a>
@@ -119,9 +174,9 @@ app.post('/api/contact', async (req, res) => {
       `
     })
 
-    // =========================
+    // ========================
     // 📩 Email to Owner
-    // =========================
+    // ========================
     await sendMail({
       to: process.env.OWNER_EMAIL,
       subject: `New Enquiry from ${name}`,
