@@ -2,20 +2,43 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import rateLimit from 'express-rate-limit'
+import mongoose from 'mongoose'
+import { v2 as cloudinary } from 'cloudinary'
 import { sendMail } from './mailer.js'
+
+// Routes
+import authRouter from './routes/auth.js'
+import projectsRouter from './routes/projects.js'
+import reviewsRouter from './routes/reviews.js'
 
 dotenv.config()
 
+// ─── Cloudinary config ───────────────────────────────────────────────────────
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
+// ─── MongoDB connect ──────────────────────────────────────────────────────────
+if (process.env.MONGODB_URI) {
+  mongoose
+    .connect(process.env.MONGODB_URI)
+    .then(() => console.log('✅ MongoDB connected'))
+    .catch(err => console.error('❌ MongoDB connection error:', err.message))
+} else {
+  console.warn('⚠️  MONGODB_URI not set — database features disabled')
+}
+
 const app = express()
 
-// CORS — restrict in production
+// ─── CORS ────────────────────────────────────────────────────────────────────
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
   : ['http://localhost:5173', 'http://localhost:4173']
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true)
     } else {
@@ -24,9 +47,9 @@ app.use(cors({
   }
 }))
 
-app.use(express.json({ limit: '10kb' })) // limit payload size
+app.use(express.json({ limit: '10kb' }))
 
-// Rate limiting — max 5 contact submissions per IP per 15 minutes
+// ─── Rate limiters ───────────────────────────────────────────────────────────
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -35,7 +58,7 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
 })
 
-// Sanitize HTML to prevent injection in emails
+// ─── Sanitize helper ─────────────────────────────────────────────────────────
 function sanitize(str) {
   if (typeof str !== 'string') return ''
   return str
@@ -47,38 +70,42 @@ function sanitize(str) {
     .trim()
 }
 
-// Health check endpoint
+// ─── Routes ──────────────────────────────────────────────────────────────────
+app.use('/api/auth', authRouter)
+app.use('/api/projects', projectsRouter)
+app.use('/api/reviews', reviewsRouter)
+
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+  })
 })
 
+// Contact form (unchanged)
 app.post('/api/contact', contactLimiter, async (req, res) => {
   const name = sanitize(req.body.name)
   const phone = sanitize(req.body.phone)
   const email = sanitize(req.body.email)
   const message = sanitize(req.body.message)
 
-  // Validation
   if (!name || !phone || !email || !message) {
     return res.status(400).json({ error: 'All fields are required' })
   }
 
-  // Basic length limits
   if (name.length > 100 || phone.length > 20 || email.length > 100 || message.length > 2000) {
     return res.status(400).json({ error: 'Input too long' })
   }
 
-  // Basic email format check
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email)) {
     return res.status(400).json({ error: 'Invalid email format' })
   }
 
   try {
-    // ========================
-    // 📩 Email to User
-    // ========================
     await sendMail({
-      to: req.body.email, // use original email for sending (sanitized version is for display)
+      to: req.body.email,
       subject: '☀️ Welcome to SolarJunction — Let\'s Go Green Together!',
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:auto;background:#F4F7F4;border-radius:12px;overflow:hidden;">
@@ -174,9 +201,6 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
       `
     })
 
-    // ========================
-    // 📩 Email to Owner
-    // ========================
     await sendMail({
       to: process.env.OWNER_EMAIL,
       subject: `New Enquiry from ${name}`,
@@ -200,9 +224,9 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
   }
 })
 
-
+// ─── Start ───────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`🚀 Server running on port ${PORT}`)
 })
