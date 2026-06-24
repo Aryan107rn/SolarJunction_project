@@ -58,6 +58,19 @@ export default function Navbar() {
           <a href="#contact" className="text-xs font-bold tracking-widest uppercase bg-[#1E5939] text-white px-5 py-2 rounded-full hover:bg-[#E88A1A] transition-colors">
             Get Quote
           </a>
+          {/* Admin Login Button */}
+          <a
+            id="admin-login-nav-btn"
+            href="/admin/login"
+            title="Admin Portal"
+            className="text-xs font-bold tracking-widest uppercase border border-[#22382B]/20 text-[#22382B]/40 px-4 py-2 rounded-full hover:border-[#1E5939] hover:text-[#1E5939] hover:bg-[#1E5939]/5 transition-all duration-300 flex items-center gap-1.5"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+            Admin
+          </a>
         </div>
 
         {/* Mobile Hamburger */}
@@ -103,6 +116,19 @@ export default function Navbar() {
             <a href="#contact" onClick={() => setMenuOpen(false)}
               className="w-full bg-[#1E5939] text-white font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:bg-[#E88A1A] transition-colors text-center">
               Get Quote
+            </a>
+
+            {/* Admin Login — Mobile */}
+            <a
+              href="/admin/login"
+              onClick={() => setMenuOpen(false)}
+              className="w-full border border-[#22382B]/20 text-[#22382B]/40 font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:border-[#1E5939] hover:text-[#1E5939] transition-colors text-center flex items-center justify-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+              Admin Portal
             </a>
 
           </motion.div>
