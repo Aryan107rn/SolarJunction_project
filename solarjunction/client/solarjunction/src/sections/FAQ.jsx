@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const faqs = [
-  { q: 'How long does installation take?', a: 'It depends on the size of the system, but most residential installations are completed within a week. Commercial projects may take 3-5 days.' },
+  { q: 'How long does installation take?', a: 'It depends on the size of the system, but most residential installations are completed within 10-15 days. Commercial projects may take 3-5 days more.' },
   { q: 'How much can I save on electricity?', a: 'On average customers save 60-90% on monthly bills depending on system size and usage.' },
   { q: 'Do you provide warranty?', a: 'Yes. Panels come with performance warranty. Also installation carries workmanship warranty.' },
   { q: 'Is my roof suitable for solar?', a: 'We do a free site survey to assess your roof before recommending any system.' },

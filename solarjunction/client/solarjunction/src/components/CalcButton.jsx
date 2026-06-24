@@ -15,9 +15,9 @@ const stateData = {
 }
 
 const propertyMultiplier = {
-  Home: 1,
-  Office: 1.2,
-  Farm: 0.9,
+  Home: 2.0,
+  Office: 1.3,
+  Farm: 1.0,
 }
 
 export default function CalcButton() {

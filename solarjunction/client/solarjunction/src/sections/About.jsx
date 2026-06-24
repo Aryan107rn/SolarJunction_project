@@ -50,7 +50,7 @@ export default function About() {
               { icon: '🌿', title: 'Eco First', desc: 'Every install reduces carbon footprint.' },
               { icon: '💸', title: 'Affordable', desc: 'Competitive pricing with flexible payment options.' },
               { icon: '🤝', title: 'Honest Work', desc: 'No upselling. We recommend only what you truly need.' },
-              { icon: '⚡', title: 'Fast Install', desc: 'Most setups completed within 1-2 days.' },
+              { icon: '⚡', title: 'Fast Install', desc: 'Most setups completed within 10-15 days' },
             ].map(({ icon, title, desc }, i) => (
               <motion.div
                 key={title}
