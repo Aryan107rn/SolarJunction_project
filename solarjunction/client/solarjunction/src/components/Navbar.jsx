@@ -48,22 +48,24 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop Buttons */}
+        {/* Desktop Buttons — unified style */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Secondary outlined CTA */}
           <button
             onClick={() => document.dispatchEvent(new CustomEvent('openCalc'))}
-            className="text-xs font-bold tracking-widest uppercase border border-[#1E5939] text-[#1E5939] px-5 py-2 rounded-full hover:bg-[#1E5939] hover:text-white transition-colors">
+            className="text-xs font-bold tracking-widest uppercase border border-[#1E5939] text-[#1E5939] px-5 py-2 rounded-full hover:bg-[#1E5939] hover:text-white transition-all duration-300">
             ⚡ Savings
           </button>
-          <a href="#contact" className="text-xs font-bold tracking-widest uppercase bg-[#1E5939] text-white px-5 py-2 rounded-full hover:bg-[#E88A1A] transition-colors">
+          {/* Primary solid CTA */}
+          <a href="#contact" className="text-xs font-bold tracking-widest uppercase bg-[#1E5939] text-white px-5 py-2 rounded-full hover:bg-[#E88A1A] transition-all duration-300">
             Get Quote
           </a>
-          {/* Admin Login Button */}
+          {/* Admin — same outlined style as Savings */}
           <a
             id="admin-login-nav-btn"
             href="/admin/login"
             title="Admin Portal"
-            className="text-xs font-bold tracking-widest uppercase border border-[#22382B]/20 text-[#22382B]/40 px-4 py-2 rounded-full hover:border-[#1E5939] hover:text-[#1E5939] hover:bg-[#1E5939]/5 transition-all duration-300 flex items-center gap-1.5"
+            className="text-xs font-bold tracking-widest uppercase border border-[#1E5939] text-[#1E5939] px-5 py-2 rounded-full hover:bg-[#1E5939] hover:text-white transition-all duration-300 flex items-center gap-1.5"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="8" r="4"/>
@@ -107,22 +109,24 @@ export default function Navbar() {
               </a>
             ))}
 
+            {/* Mobile — Secondary outlined */}
             <button
               onClick={() => { document.dispatchEvent(new CustomEvent('openCalc')); setMenuOpen(false) }}
-              className="w-full border border-[#1E5939] text-[#1E5939] font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:bg-[#1E5939] hover:text-white transition-colors">
+              className="w-full border border-[#1E5939] text-[#1E5939] font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:bg-[#1E5939] hover:text-white transition-all duration-300">
               ⚡ Calculate Savings
             </button>
 
+            {/* Mobile — Primary solid */}
             <a href="#contact" onClick={() => setMenuOpen(false)}
-              className="w-full bg-[#1E5939] text-white font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:bg-[#E88A1A] transition-colors text-center">
+              className="w-full bg-[#1E5939] text-white font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:bg-[#E88A1A] transition-all duration-300 text-center">
               Get Quote
             </a>
 
-            {/* Admin Login — Mobile */}
+            {/* Mobile Admin — same outlined style as Savings */}
             <a
               href="/admin/login"
               onClick={() => setMenuOpen(false)}
-              className="w-full border border-[#22382B]/20 text-[#22382B]/40 font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:border-[#1E5939] hover:text-[#1E5939] transition-colors text-center flex items-center justify-center gap-2"
+              className="w-full border border-[#1E5939] text-[#1E5939] font-bold text-sm tracking-widest uppercase py-3 rounded-full hover:bg-[#1E5939] hover:text-white transition-all duration-300 text-center flex items-center justify-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="8" r="4"/>
